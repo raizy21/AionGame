@@ -1,4 +1,5 @@
 /**
+ * Launcher class for an interactive.
  * Battle simulation between a player and a monster.
  *
  * @author andrei
@@ -16,40 +17,18 @@ public class AionGame {
             System.out.println("java AionGame 100 50 80");
             return;
         }
-        // player
-        int playerHP = Integer.parseInt(args[0]);
-        int playerATK = Integer.parseInt(args[1]);
-        int playerHIT = Integer.parseInt(args[2]);
-        // monster
-        int monsterHP = playerHP * 2;
-        int monsterATK = playerATK / 2;
-        int monsterHIT = 50;
+       
+        // creates a both participants
+        Player player = new Player(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+        Monster monster = new Monster(player);
 
-        // simulate the battle until someone has died
-        while (playerHP > 0 && monsterHP > 0) {
-            System.out.println("---------------");
-            int random = (int) (100 * Math.random());
-            System.out.println("Player has " + playerHP + " HP.");
-            if (random <= playerHIT) {
-                System.out.println("Player hits Monster for " + playerATK + " damage.");
-                monsterHP -= playerATK;
-            } else {
-                System.out.println("Player missed!");
-            }
-            // is the monster still alive?
-            if (monsterHP > 0) {
-                System.out.println("Monster has " + monsterHP + " HP.");
-                random = (int) (100 * Math.random());
-                if (random <= monsterHIT) {
-                    System.out.println("Monster hits Player for " + monsterATK + " damage.");
-                    playerHP -= monsterATK;
-                } else {
-                    System.out.println("Monster missed!");
-                }
-            } 
-        }
-        System.out.println("---------------");
-        if (monsterHP <= 0) {
+        // create and start the fight
+        Fight fight = new Fight(player, monster);
+        fight.start();
+
+        if (player.isAlive() && monster.isAlive()) {
+            System.out.println("The fight ended in a draw.");
+        } else if (player.isAlive()) {
             System.out.println("Player has won the battle!");
         } else {
             System.out.println("Monster has won the battle!");
