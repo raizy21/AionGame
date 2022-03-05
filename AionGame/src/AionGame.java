@@ -1,26 +1,61 @@
+import java.util.Scanner;
 /**
- * Launcher class for an interactive.
- * Battle simulation between a player and a monster.
+ * Launcher class for an interactive battle between a player and a monster.
  *
  * @author andrei
  */
 public class AionGame {
-	 /**
-     * The main method of the simulation.
-     *
-     * @param args values for the player. args[0] player hp, args[1] player atk, args[2] player hit
-     */
-    public static void main(String[] args) {
-        // checks if there are enough arguments
-        if (args.length < 3) {
-            System.out.println("Please start the simulation with three arguments!");
+
+/**
+ * The main method of the simulation.
+ *
+ * @param args values for the player. args[0] player hp, args[1] player atk, args[2] player hit
+ */
+	public static void main(String[] args) {
+        // checks if there are enough arguments and if all are integers
+        if (args.length < 3 || !isNumber(args[0]) || !isNumber(args[1]) || !isNumber(args[2])) {
+            System.out.println("Please start with three arguments");
             System.out.println("java AionGame 100 50 80");
             return;
         }
-       
-        // creates a both participants
-        Player player = new Player(Integer.parseInt(args[0]), Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-        Monster monster = new Monster(player);
+
+        final int hp = Integer.parseInt(args[0]);
+        final int atk = Integer.parseInt(args[1]);
+        final int hit = Integer.parseInt(args[2]);
+
+        if (hp <= 0) {
+            System.out.println("The heal points must be over 0.");
+            return;
+        }
+
+        if (atk <= 0) {
+            System.out.println("The attack power must be over 0.");
+            return;
+        }
+
+        if (hit <= 0 || hit >= 100) {
+            System.out.println("The hit chance must between 0 and 100.");
+            return; 
+        }
+
+        Player player = new Player(hp, atk, hit);
+
+        // create a random monster type
+        int random = (int) (4 * Math.random());
+        Monster monster;
+        switch (random) {
+            case 0:
+                monster = new Monster(player);
+                break;
+            case 1:
+                monster = new Asmos(player);
+                break;
+            case 2:
+                monster = new Tank(player);
+                break;
+            default:
+                monster = new Vampire(player);
+        }
 
         // create and start the fight
         Fight fight = new Fight(player, monster);
@@ -33,5 +68,17 @@ public class AionGame {
         } else {
             System.out.println("Monster has won the battle!");
         }
+    }
+
+    /**
+     * checks if the given parameter is a integer number or not
+     * this variant is not perfect and the use of exceptions are better
+     * @param input the possible integer number
+     * @return true iff the parameter is a integer number otherwise false
+     */
+    private static boolean isNumber(String input) {
+        try (Scanner scanner = new Scanner(input)) {
+			return scanner.hasNextInt();
+		}
     }
 }

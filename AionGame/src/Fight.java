@@ -5,6 +5,7 @@ import java.util.Scanner;
  *
  * @author andrei
  */
+
 public class Fight {
     /**
      * the player object
@@ -33,6 +34,21 @@ public class Fight {
     }
 
     /**
+     * asks the user for an input to attack the monster or to use a heal potion
+     *
+     * @return the user input
+     */
+    private String askWhetherToAttack() {
+        String input = "";
+        do {
+            System.out.println("Use \"1\" for attack, \"0\" for an healing potion - you have " + player.getHealPotions() + " or \"x\" for exit.");
+            input = stdin.next();
+        } while (input.length() != 1 || !"01x".contains(input));
+
+        return input;
+    }
+
+    /**
      * starts the fight to death
      * In each round the player starts. The user can select between an attack or the healing potion.
      * After that the monster attacks.
@@ -44,21 +60,27 @@ public class Fight {
 
             String input = askWhetherToAttack();
 
-            if ("1".equals(input)) { // attack
-                int damage = player.calculateAttackDamage();
-                if (damage == -1) {
-                    System.out.println("Player missed!");
-                } else {
-                    System.out.println("Player hits Monster for " + damage + " damage.");
-                    monster.takeDamage(damage);
-                }
-            } else if ("0".equals(input)) { // use heal potion, no error checking!
-                player.usePotion();
-            } else if ("x".equals(input)) {
-                System.out.println("---------------");
-                return;
-            } else {
-                System.out.println("Wrong input.");
+            switch (input) {
+                case "1":
+                    int damage = player.calculateAttackDamage();
+                    if (damage == -1) {
+                        System.out.println("Player missed!");
+                    } else {
+                        int realDamage = monster.takeDamage(damage);
+                        System.out.println("Player hits Monster for " + damage + " damage and the Monster lose " + realDamage + " HP.");
+                    }
+                    break;
+                case "0":
+                    int heal = player.usePotion();
+                    if (heal == -1) {
+                        System.out.println("Sorry, no heal potions left :(");
+                    } else {
+                        System.out.println("Player healed for " + heal + " HP.");
+                    }
+                    break;
+                case "x":
+                    System.out.println("---------------");
+                    return;
             }
 
             if (!monster.isAlive()) {
@@ -69,20 +91,10 @@ public class Fight {
             if (damage == -1) {
                 System.out.println("Monster missed!");
             } else {
-                System.out.println("Monster hits Player for " + damage + " damage.");
-                player.takeDamage(damage);
+                int realDamage = player.takeDamage(damage);
+                System.out.println("Monster hits Player for " + damage + " damage and the Player lose " + realDamage + " HP.");
             }
             System.out.println("---------------");
         }
-    }
-
-    /**
-     * asks the user for an input to attack the monster or to use a heal potion
-     *
-     * @return the user input
-     */
-    private String askWhetherToAttack() {
-        System.out.println("Use \"1\" for attack, \"0\" for an healing potion - you have " + player.healPotions + " or \"x\" for exit.");
-        return stdin.next();
     }
 }

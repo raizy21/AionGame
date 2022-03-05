@@ -1,98 +1,44 @@
 /**
- * Class to represent a player with heal points, max heal points, attack power, a hit chance and an amount of heal potions with a value of 50.
+ * class to represent a player with heal points, max heal points, attack power, a hit chance and an amount of heal potions with a value of 50.
  *
  * @author andrei
  */
-public class Player {
-    /**
-     * attack power
-     */
-    public final int atk;
-    /**
-     * hit chance
-     */
-    private final int hit;
+public class Player extends Character {
     /**
      * maximum health points
      */
     private final int maxHP;
     /**
-     * amount of health healed by a heal potion
-     */
-    private final int healPotionValue = 50;
-    /**
-     * health points
-     */
-    public int hp;
-    /**
      * number of heals potions
      */
-    public int healPotions = 3;
+    private int healPotions;
 
     /**
      * creates a player object
      *
-     * @param hp  health point (positive integer value)
+     * @param hp  health points (positive integer value)
      * @param atk attack power (positive integer value)
      * @param hit hit chance (between 0 and 100)
      */
-    public Player(int hp, int atk, int hit) {
-        this.hp = hp;
+    public Player(final int hp, final int atk, final int hit) {
+        super(hp, atk, hit);
         this.maxHP = hp;
-        this.atk = atk;
-        this.hit = hit;
+        healPotions = 3;
     }
 
     /**
      * use heals potion to heal the player
-     */
-    public void usePotion() {
-        if (healPotions <= 0) {
-            System.out.println("Sorry, no heal potions left :(");
-            return;
-        }
-        healPotions--;
-        int old = hp;
-        hp += healPotionValue;
-        if (hp > maxHP) {
-            hp = maxHP;
-        }
-        System.out.println("Player healed for " + (hp - old) + " HP.");
-    }
-
-    /**
-     * simulates an attack
      *
-     * @return -1 iff the hit is a miss otherwise the damage (atk)
+     * @return -1 iff all of the players heal potions are empty otherwise number of restored heal points
      */
-    public int calculateAttackDamage() {
-        int random = (int) (100 * Math.random());
-        if (random <= hit) {
-            return atk;
-        } else {
-            return -1;
+    public int usePotion() {
+        if (healPotions > 0) {
+            healPotions--;
+            int old = hp;
+            hp = Math.min(hp + 50, maxHP);
+            return hp - old;
         }
-    }
-
-    /**
-     * player takes the damage
-     *
-     * @param damage the amount of damage
-     */
-    public void takeDamage(int damage) {
-        hp -= damage;
-        if (hp < 0) {
-            hp = 0;
-        }
-    }
-
-    /**
-     * checks if the player is still alive
-     *
-     * @return true iff the player is alive otherwise false
-     */
-    public boolean isAlive() {
-        return hp > 0;
+        return -1;
     }
 
     /**
@@ -101,6 +47,15 @@ public class Player {
      * @return string representation of the player
      */
     public String toString() {
-        return "Player has " + hp + " HP.";
+        return "Player has " + hp + " HP";
+    }
+
+    /**
+     * returns the number of heal potions
+     *
+     * @return number of heal potions
+     */
+    public int getHealPotions() {
+        return healPotions;
     }
 }
