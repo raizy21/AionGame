@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 /**
  * Launcher class for an interactive battle between a player and a monster.
@@ -39,36 +40,15 @@ public class AionGame {
         }
 
         Player player = new Player(hp, atk, hit);
-
-        // create a random monster type
-        int random = (int) (4 * Math.random());
-        Monster monster;
-        switch (random) {
-            case 0:
-                monster = new Monster(player);
-                break;
-            case 1:
-                monster = new Asmos(player);
-                break;
-            case 2:
-                monster = new Tank(player);
-                break;
-            default:
-                monster = new Vampire(player);
+        Map map = new Map("C:\\Users\\razvan\\git\\AionGame\\AionGame\\src\\map.txt", player);
+        try {
+            map.load();
+        } catch (IOException e) {
+            System.out.println("The map does not exist!");
+            return;
         }
-
-        // create and start the fight
-        Fight fight = new Fight(player, monster);
-        fight.start();
-
-        if (player.isAlive() && monster.isAlive()) {
-            System.out.println("The fight ended in a draw.");
-        } else if (player.isAlive()) {
-            System.out.println("Player has won the battle!");
-        } else {
-            System.out.println("Monster has won the battle!");
-        }
-    }
+        map.start(); 
+	}
 
     /**
      * checks if the given parameter is a integer number or not

@@ -58,4 +58,12 @@ public class Player extends Character {
     public int getHealPotions() {
         return healPotions;
     }
+    
+    /**
+     * resets the player
+     */
+    public void reset() {
+        hp = maxHP;
+        healPotions = 3;
+    }
 }
